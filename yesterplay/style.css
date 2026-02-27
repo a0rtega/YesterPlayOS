@@ -1,0 +1,550 @@
+@font-face {
+    font-family: 'W95FA';
+    src: url('fonts/w95fa.woff2') format('woff2'),
+         url('fonts/w95fa.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'W95FA', 'MS Sans Serif', 'Arial', sans-serif;
+}
+
+#desktop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px);
+    background-color: #008080;
+    background-size: cover;
+    background-position: center;
+}
+
+#shortcuts {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    height: 100%;
+}
+
+.shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    color: white;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.shortcut img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 5px;
+    pointer-events: none;
+}
+
+.shortcut span {
+    text-shadow: 1px 1px 2px black;
+    word-break: break-word;
+}
+
+.window {
+    position: absolute;
+    border: 2px outset;
+    background-color: #c0c0c0;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    min-width: 180px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-header {
+    background-color: #000080;
+    color: white;
+    padding: 3px 5px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    flex-shrink: 0;
+    touch-action: none;
+    user-select: none;
+}
+
+.window-title {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.window-controls button {
+    background-color: #c0c0c0;
+    border: 1px outset;
+    width: 22px;
+    height: 22px;
+    margin-left: 2px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.window-controls button:active {
+    border-style: inset;
+}
+
+.window-body {
+    padding: 10px;
+    flex-grow: 1;
+    box-sizing: border-box;
+    overflow: auto;
+    background-color: #c0c0c0;
+}
+
+.window-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    box-sizing: border-box;
+    z-index: 999999; /* Always above windows */
+}
+
+#taskbar-windows {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: 5px;
+    flex-grow: 1;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+}
+
+#taskbar-windows::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.taskbar-window {
+    display: flex;
+    align-items: center;
+    border: 2px outset;
+    background-color: #c0c0c0;
+    padding: 3px 8px;
+    margin-right: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 30px;
+    max-width: 150px;
+    height: 30px;
+    box-sizing: border-box;
+    flex-shrink: 1;
+}
+
+.taskbar-window.active {
+    border-style: inset;
+    background-color: #dfdfdf;
+    font-weight: bold;
+}
+
+.taskbar-window-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+.taskbar-window span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#start-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px outset;
+    cursor: pointer;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+#start-button:active {
+    border-style: inset;
+}
+
+#start-button img {
+    width: 74px;
+    height: 30px;
+}
+
+#start-menu {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 230px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: #c0c0c0;
+    border: 2px outset;
+    padding: 5px;
+    padding-left: 35px;
+    display: none;
+    z-index: 1000000;
+}
+
+#yesterplay-text {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    background-color: #808080;
+    color: white;
+    font-size: 1em;
+    white-space: nowrap;
+    border-right: 2px outset;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 40px;
+}
+
+#yesterplay-text span {
+    display: block;
+    transform: rotate(-90deg);
+    white-space: nowrap;
+}
+
+#start-menu.show {
+    display: block;
+}
+
+.start-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.start-menu-item:hover {
+    background-color: #000080;
+    color: white;
+}
+
+.start-menu-item img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+#clock {
+    margin-left: auto;
+    padding: 5px 10px;
+    border: 2px inset;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.settings-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.settings-tabs {
+    display: flex;
+    border-bottom: 2px solid #c0c0c0;
+    flex-wrap: wrap;
+}
+
+.tab {
+    padding: 5px 10px;
+    border: 2px outset;
+    border-bottom: none;
+    background-color: #c0c0c0;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+.tab.active {
+    background-color: #dfdfdf;
+    border-style: inset;
+    border-bottom: 2px solid #dfdfdf;
+}
+
+.settings-content {
+    border: 2px inset;
+    padding: 20px;
+    flex-grow: 1;
+    background-color: #dfdfdf;
+    overflow-y: auto;
+}
+
+.settings-content-pane {
+    display: none;
+}
+
+.settings-content-pane.active {
+    display: block;
+}
+
+.settings-group {
+    margin-bottom: 20px;
+}
+
+.win95-input {
+    border: 2px inset;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.win95-button {
+    border: 2px outset;
+    background-color: #c0c0c0;
+    padding: 2px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    user-select: none;
+}
+
+.win95-button:active {
+    border: 2px inset;
+    padding: 3px 11px 1px 13px;
+}
+
+.hint-box {
+    border: 1px solid #808080;
+    padding: 10px;
+    background-color: #fffced;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hint-box img {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.terminal-container {
+    height: 100%;
+    border: 2px inset;
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.terminal-header {
+    border-bottom: 1px dashed #0f0;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.win95-menu {
+    display: flex;
+    background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    padding: 2px;
+    gap: 2px;
+}
+
+.win95-menu-item {
+    padding: 2px 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.win95-menu-item:hover {
+    background: #000080;
+    color: white;
+}
+
+.win95-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #c0c0c0;
+    border: 2px outset;
+    z-index: 1000;
+    min-width: 120px;
+    color: black;
+}
+
+.win95-dropdown-item {
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.win95-dropdown-item:hover {
+    background: #000080;
+    color: white;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10000000; /* Extremely high to stay above windows */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog {
+    background-color: #c0c0c0;
+    border: 2px outset;
+    width: 90%;
+    max-width: 320px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.modal-header {
+    background-color: #000080;
+    color: white;
+    padding: 3px 5px;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.modal-footer {
+    padding: 10px;
+    text-align: center;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: transparent;
+    touch-action: none;
+    z-index: 10;
+}
+.handle-se {
+    bottom: -6px;
+    right: -6px;
+    cursor: se-resize;
+}
+.handle-s {
+    bottom: -6px;
+    left: 0;
+    cursor: s-resize;
+    width: 100%;
+}
+.handle-e {
+    top: 0;
+    right: -6px;
+    cursor: e-resize;
+    height: 100%;
+}
+
+/* Scrollbar Styles */
+*::-webkit-scrollbar {
+    width: 16px !important;
+    height: 16px !important;
+    display: block !important;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: #dfdfdf !important;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAD0lEQVQImWNgoBT8BAAAEAAV949S6AAAAABJRU5ErkJggg==") !important;
+    background-repeat: repeat !important;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0 !important;
+    border: none !important;
+    box-shadow: inset 1px 1px #ffffff, 
+                inset -1px -1px #000000, 
+                inset 2px 2px #dfdfdf, 
+                inset -2px -2px #808080 !important;
+}
+
+/* Mobile Media Queries */
+@media (max-width: 600px) {
+    #shortcuts {
+        padding: 10px;
+        gap: 5px;
+    }
+    
+    .shortcut {
+        width: 70px;
+        margin: 5px;
+    }
+
+    .shortcut span {
+        font-size: 0.9em;
+    }
+
+    #start-button img {
+        width: 60px;
+    }
+
+    #start-menu {
+        width: 200px;
+        padding-left: 30px;
+    }
+
+    #yesterplay-text {
+        width: 25px;
+    }
+
+    .taskbar-window span {
+        display: none;
+    }
+
+    .taskbar-window {
+        padding: 3px;
+        margin-right: 2px;
+    }
+
+    .taskbar-window-icon {
+        margin-right: 0;
+    }
+}

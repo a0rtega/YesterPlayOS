@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YesterPlayOS</title>
+    <meta name="description" content="YesterPlayOS is a nostalgic, interactive interface. Explore retro utilities, play classic games, and customize your desktop experience.">
+    <meta name="keywords" content="Windows 95, Web OS, Retro UI, Nostalgia, Web Interface, Interactive Desktop, YesterPlayOS">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://a0rtega.github.io/YesterPlayOS/">
+    <meta property="og:title" content="YesterPlayOS">
+    <meta property="og:description" content="Step back in time with YesterPlayOS">
+    <meta property="og:image" content="images/yesterplay_logo.png">
+
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <noscript>
+        <div style="padding: 20px; text-align: center; background: #008080; color: white; height: 100vh; font-family: sans-serif;">
+            <h1>YesterPlayOS</h1>
+            <p>Welcome to YesterPlayOS. This application requires JavaScript to provide the interactive desktop experience.</p>
+            <p>Explore retro apps like Notepad, Stocks, and classic media players in a nostalgic environment.</p>
+        </div>
+    </noscript>
+    <div id="desktop">
+        <div id="shortcuts"></div>
+    </div>
+    <div id="taskbar">
+        <div id="start-button">
+            <img src="icons/start-yp.png" alt="Start">
+        </div>
+        <div id="start-menu">
+            <div id="yesterplay-text"><span><strong>YesterPlay</strong>OS</span></div>
+            <div id="start-menu-items"></div>
+        </div>
+        <div id="taskbar-windows"></div>
+        <div id="clock"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
