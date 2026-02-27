@@ -2,6 +2,8 @@
 
 ![YesterPlayOS Screenshot](YesterPlayOS_screenshot1.png)
 
+[**Try it live!**](https://a0rtega.github.io/YesterPlayOS/yesterplay/)
+
 YesterPlayOS is a lightweight, frontend-only web application that simulates a classic Windows 95-inspired desktop interface. It provides a nostalgic and highly configurable environment with windows, a taskbar, a Start menu, and various built-in utilities.
 
 ## Features
