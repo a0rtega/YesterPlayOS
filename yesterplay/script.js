@@ -87,56 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--theme-color', themeColor);
     }
 
-    window.showColorPicker = function(title, onSelect) {
-        const colors = [];
-        // Generate a 256 color palette (approx)
-        for (let r = 0; r < 256; r += 51) {
-            for (let g = 0; g < 256; g += 51) {
-                for (let b = 0; b < 256; b += 51) {
-                    const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-                    colors.push(hex);
-                }
-            }
-        }
-        for (let i = 10; i < 255; i += 6) {
-            const v = i.toString(16).padStart(2, '0');
-            const hex = `#${v}${v}${v}`;
-            if (!colors.includes(hex)) colors.push(hex);
-        }
-
-        const modalOverlay = document.createElement('div');
-        modalOverlay.className = 'modal-overlay';
-        modalOverlay.style.zIndex = 100000000; // Even higher
-
-        modalOverlay.innerHTML = `
-            <div class="modal-dialog" style="width: auto; max-width: 350px;">
-                <div class="modal-header">${title}</div>
-                <div class="modal-body" style="padding: 10px; background: #c0c0c0;">
-                    <div id="color-palette" style="display: grid; grid-template-columns: repeat(16, 1fr); gap: 1px; background: #000; padding: 1px; border: 2px inset;">
-                        ${colors.slice(0, 256).map(c => `<div class="color-swatch" style="background: ${c}; width: 15px; height: 15px; cursor: pointer;" title="${c}" data-color="${c}"></div>`).join('')}
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="win95-button" id="modal-cancel">Cancel</button>
-                </div>
-            </div>
-        `;
-
-        desktop.appendChild(modalOverlay);
-
-        modalOverlay.querySelectorAll('.color-swatch').forEach(swatch => {
-            swatch.addEventListener('click', () => {
-                const color = swatch.getAttribute('data-color');
-                desktop.removeChild(modalOverlay);
-                if (onSelect) onSelect(color);
-            });
-        });
-
-        modalOverlay.querySelector('#modal-cancel').addEventListener('click', () => {
-            desktop.removeChild(modalOverlay);
-        });
-    }
-
     function createShortcut(item) {
         const shortcut = document.createElement('div');
         shortcut.className = 'shortcut';
@@ -169,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function bringToFront(windowData) {
         highestZIndex++;
         windowData.windowEl.style.zIndex = highestZIndex;
+        windowData.windowEl.style.display = 'flex'; // Un-minimize if hidden
         updateActiveWindow(windowData);
         
         // Ensure modals stay on top
@@ -211,8 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         windowEl.innerHTML = `
             <div class="window-header">
-                <span class="window-title">${item.name}</span>
+                <div class="window-header-title-container">
+                    <img src="${item.icon}" class="window-header-icon">
+                    <span class="window-title">${item.name}</span>
+                </div>
                 <div class="window-controls">
+                    <button class="minimize">_</button>
+                    <button class="maximize">□</button>
                     <button class="close">X</button>
                 </div>
             </div>
@@ -230,13 +186,28 @@ document.addEventListener('DOMContentLoaded', () => {
         taskbarButton.innerHTML = `<img src="${item.icon}" class="taskbar-window-icon"><span>${item.name}</span>`;
         taskbarWindows.appendChild(taskbarButton);
 
-        const windowData = { id: windowId, windowEl, taskbarButton, item };
+        const windowData = { 
+            id: windowId, 
+            windowEl, 
+            taskbarButton, 
+            item,
+            isMaximized: false,
+            restoreInfo: null
+        };
         openWindows.push(windowData);
 
         bringToFront(windowData);
 
         taskbarButton.addEventListener('click', () => {
-            bringToFront(windowData);
+            if (windowEl.style.display === 'none') {
+                bringToFront(windowData);
+            } else if (windowData.taskbarButton.classList.contains('active')) {
+                // Already front, so minimize
+                windowEl.style.display = 'none';
+                updateActiveWindow(null);
+            } else {
+                bringToFront(windowData);
+            }
         });
 
         const onWindowFocus = () => {
@@ -257,9 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const header = windowEl.querySelector('.window-header');
         const closeButton = windowEl.querySelector('.close');
+        const minimizeButton = windowEl.querySelector('.minimize');
+        const maximizeButton = windowEl.querySelector('.maximize');
         const video = windowEl.querySelector('video');
 
-        closeButton.addEventListener('click', () => {
+        closeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (video) {
                 video.pause();
             }
@@ -268,13 +242,56 @@ document.addEventListener('DOMContentLoaded', () => {
             openWindows = openWindows.filter(w => w.id !== windowId);
         });
 
-        makeDraggable(windowEl, header);
-        makeResizable(windowEl);
+        minimizeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            windowEl.style.display = 'none';
+            updateActiveWindow(null);
+        });
+
+        maximizeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMaximize(windowData);
+        });
+
+        header.addEventListener('dblclick', () => {
+            toggleMaximize(windowData);
+        });
+
+        makeDraggable(windowEl, header, windowData);
+        makeResizable(windowEl, windowData);
+    }
+
+    function toggleMaximize(windowData) {
+        const win = windowData.windowEl;
+        if (!windowData.isMaximized) {
+            // Save restore state
+            windowData.restoreInfo = {
+                left: win.style.left,
+                top: win.style.top,
+                width: win.style.width,
+                height: win.style.height
+            };
+            win.style.left = '0';
+            win.style.top = '0';
+            win.style.width = '100%';
+            win.style.height = '100%';
+            win.classList.add('maximized');
+            windowData.isMaximized = true;
+        } else {
+            // Restore
+            const info = windowData.restoreInfo;
+            win.style.left = info.left;
+            win.style.top = info.top;
+            win.style.width = info.width;
+            win.style.height = info.height;
+            win.classList.remove('maximized');
+            windowData.isMaximized = false;
+        }
     }
 
     function updateActiveWindow(activeWindow) {
         openWindows.forEach(w => {
-            if (w.id === activeWindow.id) {
+            if (activeWindow && w.id === activeWindow.id) {
                 w.taskbarButton.classList.add('active');
             } else {
                 w.taskbarButton.classList.remove('active');
@@ -282,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function makeDraggable(element, handle) {
+    function makeDraggable(element, handle, windowData) {
         let isDragging = false;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
@@ -310,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const onStart = (e) => {
+            if (windowData.isMaximized) return; // Can't drag maximized window
             if (e.target.classList.contains('resize-handle') || e.target.closest('button')) {
                 return;
             }
@@ -329,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handle.addEventListener('touchstart', onStart, { passive: false });
     }
 
-    function makeResizable(element) {
+    function makeResizable(element, windowData) {
         const handles = ['se', 's', 'e'];
         handles.forEach(handleName => {
             const handle = document.createElement('div');
@@ -337,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element.appendChild(handle);
 
             const onStart = (e) => {
+                if (windowData.isMaximized) return; // Can't resize maximized window
                 e.stopPropagation();
                 let isResizing = true;
                 const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -424,6 +443,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 desktop.removeChild(modalOverlay);
             });
         }
+    }
+
+    window.showColorPicker = function(title, onSelect) {
+        const colors = [];
+        // Generate a 256 color palette (approx)
+        for (let r = 0; r < 256; r += 51) {
+            for (let g = 0; g < 256; g += 51) {
+                for (let b = 0; b < 256; b += 51) {
+                    const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+                    colors.push(hex);
+                }
+            }
+        }
+        for (let i = 10; i < 255; i += 6) {
+            const v = i.toString(16).padStart(2, '0');
+            const hex = `#${v}${v}${v}`;
+            if (!colors.includes(hex)) colors.push(hex);
+        }
+
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        modalOverlay.style.zIndex = 100000000; // Even higher
+
+        modalOverlay.innerHTML = `
+            <div class="modal-dialog" style="width: auto; max-width: 350px;">
+                <div class="modal-header">${title}</div>
+                <div class="modal-body" style="padding: 10px; background: #c0c0c0;">
+                    <div id="color-palette" style="display: grid; grid-template-columns: repeat(16, 1fr); gap: 1px; background: #000; padding: 1px; border: 2px inset;">
+                        ${colors.slice(0, 256).map(c => `<div class="color-swatch" style="background: ${c}; width: 15px; height: 15px; cursor: pointer;" title="${c}" data-color="${c}"></div>`).join('')}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="win95-button" id="modal-cancel">Cancel</button>
+                </div>
+            </div>
+        `;
+
+        desktop.appendChild(modalOverlay);
+
+        modalOverlay.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                const color = swatch.getAttribute('data-color');
+                desktop.removeChild(modalOverlay);
+                if (onSelect) onSelect(color);
+            });
+        });
+
+        modalOverlay.querySelector('#modal-cancel').addEventListener('click', () => {
+            desktop.removeChild(modalOverlay);
+        });
     }
 
     // Always load the latest config to get new shortcuts
