@@ -1,0 +1,21 @@
+{
+  "name": "YesterPlayOS",
+  "short_name": "YesterPlay",
+  "description": "A retro personal computer web interface.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#008080",
+  "theme_color": "#c0c0c0",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
