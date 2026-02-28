@@ -81,6 +81,60 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set title
         const title = sessionStorage.getItem('yesterplay_title') || config.desktop.title || 'YesterPlayOS';
         document.title = title;
+
+        // Set theme color
+        const themeColor = sessionStorage.getItem('yesterplay_theme_color') || config.desktop.theme_color || '#000080';
+        document.documentElement.style.setProperty('--theme-color', themeColor);
+    }
+
+    window.showColorPicker = function(title, onSelect) {
+        const colors = [];
+        // Generate a 256 color palette (approx)
+        for (let r = 0; r < 256; r += 51) {
+            for (let g = 0; g < 256; g += 51) {
+                for (let b = 0; b < 256; b += 51) {
+                    const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+                    colors.push(hex);
+                }
+            }
+        }
+        for (let i = 10; i < 255; i += 6) {
+            const v = i.toString(16).padStart(2, '0');
+            const hex = `#${v}${v}${v}`;
+            if (!colors.includes(hex)) colors.push(hex);
+        }
+
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        modalOverlay.style.zIndex = 100000000; // Even higher
+
+        modalOverlay.innerHTML = `
+            <div class="modal-dialog" style="width: auto; max-width: 350px;">
+                <div class="modal-header">${title}</div>
+                <div class="modal-body" style="padding: 10px; background: #c0c0c0;">
+                    <div id="color-palette" style="display: grid; grid-template-columns: repeat(16, 1fr); gap: 1px; background: #000; padding: 1px; border: 2px inset;">
+                        ${colors.slice(0, 256).map(c => `<div class="color-swatch" style="background: ${c}; width: 15px; height: 15px; cursor: pointer;" title="${c}" data-color="${c}"></div>`).join('')}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="win95-button" id="modal-cancel">Cancel</button>
+                </div>
+            </div>
+        `;
+
+        desktop.appendChild(modalOverlay);
+
+        modalOverlay.querySelectorAll('.color-swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                const color = swatch.getAttribute('data-color');
+                desktop.removeChild(modalOverlay);
+                if (onSelect) onSelect(color);
+            });
+        });
+
+        modalOverlay.querySelector('#modal-cancel').addEventListener('click', () => {
+            desktop.removeChild(modalOverlay);
+        });
     }
 
     function createShortcut(item) {

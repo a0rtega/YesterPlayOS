@@ -68,7 +68,7 @@ body {
 }
 
 .window-header {
-    background-color: #000080;
+    background-color: var(--theme-color, #000080);
     color: white;
     padding: 3px 5px;
     font-weight: bold;
@@ -257,7 +257,7 @@ body {
 }
 
 .start-menu-item:hover {
-    background-color: #000080;
+    background-color: var(--theme-color, #000080);
     color: white;
 }
 
@@ -394,7 +394,7 @@ body {
 }
 
 .win95-menu-item:hover {
-    background: #000080;
+    background: var(--theme-color, #000080);
     color: white;
 }
 
@@ -416,7 +416,7 @@ body {
 }
 
 .win95-dropdown-item:hover {
-    background: #000080;
+    background: var(--theme-color, #000080);
     color: white;
 }
 
@@ -442,7 +442,7 @@ body {
 }
 
 .modal-header {
-    background-color: #000080;
+    background-color: var(--theme-color, #000080);
     color: white;
     padding: 3px 5px;
     font-weight: bold;

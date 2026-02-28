@@ -30,6 +30,7 @@ The desktop environment is driven by `yesterplay/config.json`. You can modify th
 ### Global Options
 - `desktop.background`: The default background image URL or CSS color.
 - `desktop.title`: The title displayed in the browser tab.
+- `desktop.theme_color`: The primary theme color (hex) for window headers and highlights.
 
 ### Shortcut Configuration Options
 Each entry in the `shortcuts` array supports the following properties:
