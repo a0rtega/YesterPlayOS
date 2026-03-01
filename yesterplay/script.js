@@ -133,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function createShortcut(item) {
         const shortcut = document.createElement('div');
         shortcut.className = 'shortcut';
-        shortcut.innerHTML = `<img src="${item.icon}" alt="${item.name}"><span>${item.name}</span>`;
+        const displayName = item.name.replace(/\n/g, '<br>');
+        shortcut.innerHTML = `<img src="${item.icon}" alt="${item.name}"><span>${displayName}</span>`;
         shortcut.addEventListener('click', () => {
             if (item.js_only) {
                 executeScript(item.content);
@@ -147,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function createStartMenuItem(item) {
         const menuItem = document.createElement('div');
         menuItem.className = 'start-menu-item';
-        menuItem.innerHTML = `<img src="${item.icon}" alt="${item.name}"><span>${item.name}</span>`;
+        const displayName = item.name.replace(/\n/g, '<br>');
+        menuItem.innerHTML = `<img src="${item.icon}" alt="${item.name}"><span>${displayName}</span>`;
         menuItem.addEventListener('click', () => {
             if (item.js_only) {
                 executeScript(item.content);
