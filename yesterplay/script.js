@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.installPWA = function() {
         if (!deferredPrompt) {
-            showModal('Installation', 'The application is already installed or not ready to be installed yet.');
+            showModal('Installation', 'Installation is not available. You might already have the app installed, or your browser/platform does not support PWA installation.');
             return;
         }
         // Show the install prompt
