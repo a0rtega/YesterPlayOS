@@ -20,8 +20,16 @@
         {
             "name": "Full Screen",
             "icon": "icons/fullscreen.png",
+            "align": "right",
             "js_only": true,
             "content": "if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => { console.error(`Error attempting to enable full-screen mode: ${err.message}`); }); } else { document.exitFullscreen(); }"
+        },
+        {
+            "name": "Install Application",
+            "icon": "icons/install.png",
+            "align": "right",
+            "js_only": true,
+            "content": "window.installPWA();"
         },
         {
             "name": "About",

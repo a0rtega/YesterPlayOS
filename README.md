@@ -41,6 +41,7 @@ Each entry in the `shortcuts` array supports the following properties:
 | `icon` | string | Yes | Path to the `.png` icon file. |
 | `content` | string | Yes | The HTML content or JavaScript code for the application. |
 | `enabled` | boolean | No | Whether the shortcut is active and visible (default: `true`). |
+| `align` | string | No | Desktop alignment: `"left"` or `"right"` (default: `"left"`). |
 | `autostart` | boolean | No | Whether the app opens automatically on startup (default: `false`). |
 | `js_only` | boolean | No | If true, executes the content as a JavaScript module without opening a window (default: `false`). |
 

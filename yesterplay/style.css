@@ -32,6 +32,23 @@ body {
     height: 100%;
 }
 
+#shortcuts-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    height: 100%;
+    pointer-events: none;
+}
+
+#shortcuts-right .shortcut {
+    pointer-events: auto;
+}
+
 .shortcut {
     display: flex;
     flex-direction: column;

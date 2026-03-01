@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const desktop = document.getElementById('desktop');
     const shortcutsContainer = document.getElementById('shortcuts');
+    const shortcutsRightContainer = document.getElementById('shortcuts-right');
     const taskbar = document.getElementById('taskbar');
     const startButton = document.getElementById('start-button');
     const startMenu = document.getElementById('start-menu');
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let openWindows = [];
 
     // Service Worker Registration
+    let deferredPrompt;
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').then(registration => {
@@ -21,6 +23,31 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+    });
+
+    window.installPWA = function() {
+        if (!deferredPrompt) {
+            showModal('Installation', 'The application is already installed or not ready to be installed yet.');
+            return;
+        }
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+        });
+    };
 
     // Clock
     function updateClock() {
@@ -68,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeDesktop() {
         // Clear existing shortcuts
         shortcutsContainer.innerHTML = '';
+        if (shortcutsRightContainer) shortcutsRightContainer.innerHTML = '';
         startMenuItems.innerHTML = '';
 
         // Populate desktop shortcuts
@@ -75,7 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.enabled === false) return;
 
             const shortcut = createShortcut(item);
-            shortcutsContainer.appendChild(shortcut);
+            if (item.align === 'right' && shortcutsRightContainer) {
+                shortcutsRightContainer.appendChild(shortcut);
+            } else {
+                shortcutsContainer.appendChild(shortcut);
+            }
 
             const startMenuItem = createStartMenuItem(item);
             startMenuItems.appendChild(startMenuItem);
