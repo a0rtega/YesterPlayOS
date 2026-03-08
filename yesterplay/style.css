@@ -59,18 +59,34 @@ body {
     width: 80px;
     cursor: pointer;
     user-select: none;
+    padding: 2px;
 }
 
 .shortcut img {
     width: 32px;
     height: 32px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
     pointer-events: none;
+    display: block;
+    padding: 2px;
 }
 
 .shortcut span {
     text-shadow: 1px 1px 2px black;
     word-break: break-word;
+    padding: 1px 3px;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.shortcut.selected img {
+    background-color: var(--theme-color, #000080);
+    opacity: 0.5;
+}
+
+.shortcut.selected span {
+    background-color: var(--theme-color, #000080);
+    border: 1px dotted #ffffff;
 }
 
 .window {

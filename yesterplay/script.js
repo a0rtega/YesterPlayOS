@@ -135,15 +135,36 @@ document.addEventListener('DOMContentLoaded', () => {
         shortcut.className = 'shortcut';
         const displayName = item.name.replace(/\n/g, '<br>');
         shortcut.innerHTML = `<img src="${item.icon}" alt="${item.name}"><span>${displayName}</span>`;
-        shortcut.addEventListener('click', () => {
+        
+        shortcut.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Deselect others
+            document.querySelectorAll('.shortcut').forEach(s => s.classList.remove('selected'));
+            // Select this one
+            shortcut.classList.add('selected');
+        });
+
+        shortcut.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
             if (item.js_only) {
                 executeScript(item.content);
             } else {
                 openWindow(item);
             }
+            shortcut.classList.remove('selected');
         });
+
         return shortcut;
     }
+
+    // Global click listener
+    document.addEventListener('click', () => {
+        startMenu.classList.remove('show');
+    });
+
+    desktop.addEventListener('click', () => {
+        document.querySelectorAll('.shortcut').forEach(s => s.classList.remove('selected'));
+    });
 
     function createStartMenuItem(item) {
         const menuItem = document.createElement('div');
