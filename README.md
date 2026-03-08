@@ -8,21 +8,25 @@ YesterPlayOS is a lightweight, frontend-only web application that simulates a cl
 
 ## Features
 - **Nostalgic UI:** Authentic Windows 95 aesthetic with classic colors, fonts, and window decorations.
-- **Window Management:** Draggable and resizable windows with z-index management and focus handling.
+- **Window Management:** Draggable and resizable windows with z-index management, focus handling, and minimize/maximize support.
 - **Taskbar & Start Menu:** Functional taskbar with a clock and a Start menu for launching applications.
 - **Pure Frontend:** Built with vanilla HTML, CSS, and JavaScript—no external frameworks required.
 - **Highly Configurable:** Easily customize shortcuts, icons, and window content through a central `config.json` file.
 - **Cross-Platform:** Supports both desktop and mobile browsers with touch interaction support.
+- **PWA Support:** Can be installed as a standalone application on desktop and mobile.
 - **Persistence:** Uses browser session and local storage for settings and application state (like Notepad content).
 
 ## Pre-built Utilities
 - **My Computer:** View system information (platform, browser, resolution) and discover helpful tips.
-- **System Settings:** Customize your desktop background URL and the global window title.
+- **System Settings:** Customize your desktop background URL, global window title, and the OS theme color.
 - **Notepad:** A functional text editor with file opening/saving capabilities and real-time cross-window synchronization.
 - **Webamp:** A classic Winamp-style music player ([Webamp](https://webamp.org/)).
+- **DOOM (js-dos):** The classic FPS running directly in your browser via [js-dos](https://js-dos.com/).
 - **Stocks:** A retro-themed terminal for tracking simulated market data.
 - **Video Guide:** An embedded YouTube player for tutorials or guides.
 - **Spotify:** Integration for playing Spotify playlists directly within the OS.
+- **Full Screen:** Quickly toggle browser full-screen mode from the desktop.
+- **Install Application:** A dedicated shortcut to trigger the PWA installation prompt.
 
 ## Customization via `config.json`
 The desktop environment is driven by `yesterplay/config.json`. You can modify this file to change the global OS settings or add/remove shortcuts.

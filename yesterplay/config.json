@@ -68,6 +68,12 @@
             "autostart": false
         },
         {
+            "name": "DOOM\n(js-dos)",
+            "icon": "icons/doom.png",
+            "content": "<iframe id=\"doom-iframe\" style=\"width: 100%; height: 100%; border: none;\"></iframe><script>(function() { const win = document.currentScript.closest('.window'); const iframe = win.querySelector('#doom-iframe'); const doc = iframe.contentDocument || iframe.contentWindow.document; const html = `<!DOCTYPE html><html><head><link rel=\"stylesheet\" href=\"https://v8.js-dos.com/latest/js-dos.css\"><script src=\"https://v8.js-dos.com/latest/js-dos.js\"><\\/script><style>body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }</style></head><body><div id=\"dos\" style=\"width: 100%; height: 100%;\"></div><script>window.onload = () => { Dos(document.getElementById(\"dos\"), { url: \"js-dos-bundles/doom.jsdos\", autoStart: true, theme: \"synthwave\", lang: \"en\" }); };<\\/script></body></html>`; doc.open(); doc.write(html); doc.close(); })();</script>",
+            "autostart": false
+        },
+        {
             "name": "Image Viewer",
             "icon": "icons/image-viewer-0.png",
             "content": "<img src=\"./images/w95_video_guide.jpg\" style=\"width: 100%; height: 100%; object-fit: contain;\">",
